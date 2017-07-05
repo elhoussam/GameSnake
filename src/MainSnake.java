@@ -1,6 +1,7 @@
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class MainSnake {
 
@@ -18,6 +19,9 @@ public class MainSnake {
 		obj.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		obj.add(gameplay);
+		JOptionPane.showMessageDialog(obj,
+			    "Welcome to Snake Game \n You Can increase or Decrese the speed of the snake by pressing (+) or (-) and to move the snake around press (UP) or (DOWN) or (RIGHT) or (LEFT) ");
+		
 		 
 	
 	

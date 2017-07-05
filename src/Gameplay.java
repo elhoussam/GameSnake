@@ -20,7 +20,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 
 	// Attribut 
 	private ImageIcon titleImage; 
-	
+	private boolean gameover = false ;
 	
 	// enxpos,enypos represent the position of the Food of the Snakes
 	private int [] enxpos = {25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450
@@ -58,10 +58,18 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 
 	private ImageIcon snakeImage; // represent the Tail
 	
+	private ImageIcon speedUp; // Speed
+	private ImageIcon speeDown; // represent the Tail
+	
 	
 	private Timer timer;
-	private int delay = 500 ; // speed of the snake
-
+	private int delay = 70 ; // speed of the snake
+	public int getDelay(){
+		return delay;
+	}
+	public void setDelay(int delay){
+		this.delay = delay ;
+	}
 	
 	// Methodes
 	
@@ -79,7 +87,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 	
 	public void paint(Graphics g){
 
-		System.out.println("Gameplay:paint:Strat");
+		//System.out.println("Gameplay:paint:Strat");
 		//Here we set the first position of the snake
 		if ( moves == 0 ){
 			//game just start
@@ -117,14 +125,33 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 		// draw scores 
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial",Font.PLAIN,14));
-		g.drawString("Scores:"+score,780,35);
+		
 
+		
+		g.drawString("Scores:"+score,780,25);
+		
 		// draw the length
 
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial",Font.PLAIN,14));
-		g.drawString("Length:"+lengthofsnake,780,57);
-
+		g.drawString("Length:"+lengthofsnake,780,45);
+		
+		
+		
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Arial",Font.PLAIN,14));
+		g.drawString("Speed:"+delay/10+"U/S",780,65);
+		
+		
+		
+		
+		/*speedUp = new ImageIcon(getClass().getResource("img/up.png"));
+		
+		titleImage.paintIcon(this, g, 150, 57);
+		 
+		speeDown = new ImageIcon(getClass().getResource("img/down.png"));
+		titleImage.paintIcon(this, g, 150, 30); 
+		*/
 		
 		// set the first direction is the "Right"
 		rightmouth = new ImageIcon( getClass().getResource("img/rightmouth.png"));
@@ -179,7 +206,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 				g.setColor(Color.WHITE);
 				g.setFont(new Font("Arial",Font.BOLD,50));
 				g.drawString("Game Over",300,330);
-
+				gameover = true ;
 				g.setFont(new Font("Arial",Font.BOLD,20));
 				g.drawString("Press the space key to restart",350,370);
 				}
@@ -187,13 +214,13 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 
 			g.dispose();// its seem finalize 
 
-			System.out.println("Gameplay:paint:end");
+			//System.out.println("Gameplay:paint:end");
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		System.out.println("Gameplay:actionPerformed:Strat");
+		//System.out.println("Gameplay:actionPerformed:Strat");
 			//timer.start();
 			if( right ){
 				for ( int r=lengthofsnake-1;r>=0;r--)
@@ -244,7 +271,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 				repaint();
 			}
 
-			System.out.println("Gameplay:actionPerformed:end");
+			//System.out.println("Gameplay:actionPerformed:end");
 	}
 
 	@Override
@@ -257,16 +284,40 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 	public void keyPressed(KeyEvent e) {
 
 		System.out.println("Gameplay:KeyPressed:Start");
-		if( e.getKeyCode()== KeyEvent.VK_SPACE){
+		System.out.println(e.getKeyCode() );
+		
+		if( !gameover && e.getKeyCode()== KeyEvent.VK_SUBTRACT ){
+			// When we add value to the delay means we slowing down
+			
+			System.out.print("key_2 [minus]: \nold speed is "+getDelay());
+			setDelay( getDelay()+15 );
+			System.out.println("new speed is "+getDelay());
+			
+			timer.setDelay(getDelay());
+			timer.restart();
+		}
+		
+		if(  !gameover &&  e.getKeyCode() == KeyEvent.VK_ADD ){
+			// When we substract value to the delay means we speeding up
+			System.out.print("key_8 [ADD]: \nold speed is "+getDelay());
+			setDelay( getDelay()-15 );
+			System.out.print("new speed is "+getDelay());
+
+			timer.setDelay(getDelay());
+			timer.restart();
+		}
+		
+		if( gameover && e.getKeyCode()== KeyEvent.VK_SPACE){
 			System.out.println("Gameplay:KeyPressed:Space");
 			moves=0;
 			score=0;
-			lengthofsnake=3;  
+			lengthofsnake=3; 
+			gameover = false ;
 			repaint();
 			}
 
-		if( e.getKeyCode() == KeyEvent.VK_RIGHT ){
-
+		if(  !gameover &&  e.getKeyCode() == KeyEvent.VK_RIGHT ){
+			 
 			System.out.println("Gameplay:KeyPressed:RIGHT");
 			moves++;
 		right = true;
@@ -280,7 +331,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 		}
 
 
-		if( e.getKeyCode() == KeyEvent.VK_LEFT ){
+		if(  !gameover && e.getKeyCode() == KeyEvent.VK_LEFT ){
 
 			System.out.println("Gameplay:KeyPressed:LEFT");
 			moves++;
@@ -294,7 +345,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 		}
 
 
-		if( e.getKeyCode() == KeyEvent.VK_UP ){
+		if(  !gameover && e.getKeyCode() == KeyEvent.VK_UP ){
 
 			System.out.println("Gameplay:KeyPressed:UP");
 			moves++;
@@ -308,7 +359,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 		}
 
 
-		if( e.getKeyCode() == KeyEvent.VK_DOWN ){
+		if(  !gameover && e.getKeyCode() == KeyEvent.VK_DOWN ){
 
 			System.out.println("Gameplay:KeyPressed:DOWN");
 			moves++;
@@ -320,7 +371,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
 		left = false ;
 		right = false ;
 		}
-
+		
 
 		System.out.println("Gameplay:KeyPressed:end");
 	}
